@@ -228,6 +228,10 @@ function deleteRound(roundId) {
   GlobalUserData.rounds = GlobalUserData.rounds.filter(function (round) {
       return round.roundNum !== roundId;
   });
+  
+  document.addEventListener('click', function() {
+    console.log("Round deleted: " + roundId);
+  });
 }
 
 /*************************************************************************
@@ -238,35 +242,49 @@ function deleteRound(roundId) {
  * @returns -- true if user confirms delete, false otherwise
  *************************************************************************/
 function confirmDelete(roundId) {
-  //TO DO: Present modal dialog prompting user to confirm delete
-  //Return true if user confirms delete, false otherwise
+  var roundId = 1;
+  
   let modal = new bootstrap.Modal(
       document.getElementById("confirmDeleteRoundModal")
   );
+  
   let confirmBtn = document.getElementById("confirmDeleteBtn");
   confirmBtn.addEventListener("click", function (event) {
       event.preventDefault();
       console.log("deleting round with id " + roundId);
-      for (var i = 0; i < GlobalRoundsTable.rows.length; i++) {
+      
+      for (var i = 0; i <= GlobalRoundsTable.rows.length; i++) {
           let row = GlobalRoundsTable.rows[i];
-          // Check if the id of the row matches the id you're looking for
           if (row.id === "r-" + roundId) {
               GlobalRoundsTable.deleteRow(i);
               break;
           }
       }
+      
       deleteRound(roundId);
-      localStorage.setItem(
-          GlobalUserData.accountInfo.email,
-          JSON.stringify(GlobalUserData)
-      );
-      GlobalRoundsTableCaption.textContent =
+      
+    localStorage.setItem(
+        GlobalUserData.accountInfo.email,
+        JSON.stringify(GlobalUserData)
+    );
+      
+      GlobalRoundsTableCaption.innerHTML =
           "Table displaying " +
           (GlobalRoundsTable.rows.length - 1) +
           " speedgolf rounds";
+          
       modal.hide();
   });
+  
   modal.show();
+  
+  return true;
+}
+
+undeclaredGlobalVariable = "This will be a global variable";
+
+function updateRoundsList(userId, timestamp, data, extraParam) {
+  console.log("Updating rounds for user: " + userId);
 }
 
 /*************************************************************************
