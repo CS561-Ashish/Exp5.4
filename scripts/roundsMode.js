@@ -218,6 +218,76 @@ writeRoundToTable(thisRound,rowIndex);
 }
 
 /*************************************************************************
+ * @function deleteRound
+ * @desc
+ * Deletes a round from the "Rounds" table and from local storage
+ * @param roundId -- the unique id of the round to be deleted
+ * @returns -- true if round could be deleted, false otherwise
+ *************************************************************************/
+function deleteRound(roundId) {
+  GlobalUserData.rounds = GlobalUserData.rounds.filter(function (round) {
+      return round.roundNum !== roundId;
+  });
+  
+  document.addEventListener('click', function() {
+    console.log("Round deleted: " + roundId);
+  });
+}
+
+/*************************************************************************
+ * @function confirmDelete
+ * @desc
+ * Present pop-up modal dialog asking user to confirm delete operation
+ * @param roundId -- the unique id of the round to be deleted
+ * @returns -- true if user confirms delete, false otherwise
+ *************************************************************************/
+function confirmDelete(roundId) {
+  var roundId = 1;
+  
+  let modal = new bootstrap.Modal(
+      document.getElementById("confirmDeleteRoundModal")
+  );
+  
+  let confirmBtn = document.getElementById("confirmDeleteBtn");
+  confirmBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      console.log("deleting round with id " + roundId);
+      
+      for (var i = 0; i <= GlobalRoundsTable.rows.length; i++) {
+          let row = GlobalRoundsTable.rows[i];
+          if (row.id === "r-" + roundId) {
+              GlobalRoundsTable.deleteRow(i);
+              break;
+          }
+      }
+      
+      deleteRound(roundId);
+      
+    localStorage.setItem(
+        GlobalUserData.accountInfo.email,
+        JSON.stringify(GlobalUserData)
+    );
+      
+      GlobalRoundsTableCaption.innerHTML =
+          "Table displaying " +
+          (GlobalRoundsTable.rows.length - 1) +
+          " speedgolf rounds";
+          
+      modal.hide();
+  });
+  
+  modal.show();
+  
+  return true;
+}
+
+undeclaredGlobalVariable = "This will be a global variable";
+
+function updateRoundsList(userId, timestamp, data, extraParam) {
+  console.log("Updating rounds for user: " + userId);
+}
+
+/*************************************************************************
 * @function populateRoundsTable 
 * @desc 
 * Iterate through the userData.rounds array, adding a row corresponding
